@@ -1,0 +1,2 @@
+### LiverMetabolism Prediction Analysis
+This code was developed for analyzing molecular data in our liver metabolism research. The analysis focuses on examining molecular patterns and their relationships with liver metabolic function.
