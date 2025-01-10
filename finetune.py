@@ -100,7 +100,7 @@ class MedModel(torch.nn.Module):
                         dropnet = 0.1, global_reducer = "sum", node_reducer = "sum", face_reducer = "sum", graph_pooling = "sum",                        
                         node_attn = True, face_attn = True)
         
-        state_dict=  torch.load('gnn_pretrain.pt', map_location='cpu')        
+        state_dict=  torch.load('GraphCL/gnn_pretrain.pt', map_location='cpu')        
 
         self.gnn.load_state_dict(state_dict, strict=False)
 
