@@ -1,0 +1,23 @@
+name: predms
+channels:
+  - rdkit
+  - mordred-descriptor
+  - omnia
+  - conda-forge
+  - defaults
+dependencies:
+  - mordred=1.2.0=pyhe5148d4_0
+  - rdkit=2019.03.4.0=py36hc20afe1_1
+  - pip:
+    - keras==2.3.1
+    - numpy==1.16.1
+    - pandas==0.22.0
+    - protobuf==3.10.0
+    - scikit-learn==0.20.2
+    - scipy==1.2.0
+    - sklearn==0.0
+    - tensorflow-gpu==2.0.0  
+    - tqdm==4.31.0
+    - flask
+    - joblib
+prefix: /home/jyryu/anaconda3/envs/mlkit
