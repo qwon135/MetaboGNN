@@ -116,7 +116,7 @@ class MedModel(torch.nn.Module):
         mol = self.gnn(batch).squeeze(1)
         return self.proj(mol)
 
-data = pd.read_csv('pretrain_data.csv', index_col=None)
+data = pd.read_parquet('data.parquet')
 
 train_dataset = CustomDataset(df = data)
 train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers = 8)

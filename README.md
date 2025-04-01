@@ -46,11 +46,15 @@ MetaboGNN/
 ## How to Run
 ### 1. Pretraining
 
-The dataset used for pretraining is not included in this repository due to a combination of licensing constraints and large file sizes. Detailed information about the data sources is provided in the manuscript.
+The dataset used for pretraining is not included in this repository due to licensing constraints and file size. However, it can be downloaded from the following link:
 
-Instead, we provide the pretrained model checkpoint (GraphCL/gnn_pretrain.pt) for reproducibility and downstream usage.
+📁 [Download pretraining dataset](https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing)
 
-You can skip this step if you only wish to fine-tune the model or evaluate it using the provided checkpoint.
+After downloading, please place the extracted files inside the `GraphCL/` directory so that the training script can access them.
+
+We also provide a pretrained model checkpoint (`GraphCL/gnn_pretrain.pt`) for users who wish to skip this step.
+
+To perform self-supervised pretraining from scratch, run:
 
 ```bash
 PYTHONPATH=. python GraphCL/pretrain.py
@@ -78,3 +82,5 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 - `edgeshaper.ipynb`: Highlights important chemical bonds based on attention weights or gradient-based signals.
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
+
+https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing
