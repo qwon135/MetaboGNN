@@ -41,8 +41,7 @@ MetaboGNN/
 ## How to Run
 ### 1. Pretraining
 
-The dataset used for pretraining is not included in this repository due to licensing restrictions.
-Details about the data sources can be found in the associated manuscript.
+The dataset used for pretraining is not included in this repository due to a combination of licensing constraints and large file sizes. Detailed information about the data sources is provided in the manuscript.
 
 Instead, we provide the pretrained model checkpoint (GraphCL/gnn_pretrain.pt) for reproducibility and downstream usage.
 
