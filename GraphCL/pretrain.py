@@ -13,15 +13,13 @@ from sklearn.metrics import mean_squared_error
 from matplotlib import pyplot as plt
 from torch_ema import ExponentialMovingAverage
 
-from ogb.utils import smiles2graph
-from dualgraph.mol import smiles2graphwithface, simles2graphwithface_with_mask
-from dualgraph.gnn import GNN
+from modules.dualgraph.gnn import GNN
 
 from torch_geometric.data import Dataset, InMemoryDataset
-from dualgraph.dataset import DGData
+from modules.dualgraph.dataset import DGData
 from torch_geometric.loader import DataLoader
 
-from ogb.utils.features import (
+from modules.ogb.utils.features import (
     allowable_features,
     atom_to_feature_vector,
     bond_to_feature_vector,
@@ -31,7 +29,7 @@ from ogb.utils.features import (
 
 from rdkit import Chem
 import numpy as np
-from dualgraph.graph import get2DConformer, Graph, getface
+from modules.dualgraph.graph import get2DConformer, Graph, getface
 
 def seed_everything(seed: int = 42):
     random.seed(seed)
