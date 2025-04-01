@@ -2,7 +2,6 @@ import pandas as pd
 import argparse
 import torch, os, random
 import numpy as np
-from graph_aug import mask_nodes
 from torch import nn
 from torch.nn import functional as F
 from tqdm import tqdm
@@ -10,13 +9,13 @@ from sklearn.metrics import mean_squared_error
 from torch_ema import ExponentialMovingAverage
 from matplotlib import pyplot as plt
 from glob import glob
-from dualgraph.mol import smiles2graphwithface
-from dualgraph.gnn import GNN2
+from modules.dualgraph.mol import smiles2graphwithface
+from modules.dualgraph.gnn import GNN
 from torch.nn.utils import clip_grad_norm_
 
 import torch_geometric
 from torch_geometric.data import Dataset, InMemoryDataset
-from dualgraph.dataset import DGData
+from modules.dualgraph.dataset import DGData
 from torch_geometric.loader import DataLoader
 import dgl
 import warnings
@@ -61,9 +60,6 @@ class CustomDataset(InMemoryDataset):
         return len(self.graph_list)
 
     def get(self, idx):
-        if self.mode=='train':
-            if random.random() < 0.5:                
-                return mask_nodes(self.graph_list[idx], 0.1)
         return self.graph_list[idx]
 
 
@@ -102,14 +98,11 @@ class MedModel(torch.nn.Module):
     def __init__(self):
         super(MedModel, self).__init__()
         self.ddi = True
-        self.gnn = GNN2(mlp_hidden_size = 512, mlp_layers = 2, latent_size = 128, use_layer_norm = False,
+        self.gnn = GNN(mlp_hidden_size = 512, mlp_layers = 2, latent_size = 128, use_layer_norm = False,
                         use_face=True, ddi=self.ddi, dropedge_rate = 0.1, dropnode_rate = 0.1, dropout = 0.1,
                         dropnet = 0.1, global_reducer = "sum", node_reducer = "sum", face_reducer = "sum", graph_pooling = "sum",                        
                         node_attn = True, face_attn = True)
-        # state_dict=  torch.load('ckpt_pretrain/ognn_pretrain_best.pt', map_location='cpu')        
-        state_dict=  torch.load('gnn_pretrain.pt', map_location='cpu')        
-        # state_dict = torch.load('/home/pjh/workspace/CYP-MAP/ckpt/0.pt')
-        # state_dict = {k.replace('gnn.', ''):v for k,v in  state_dict.items() if 'gnn.' in k}
+        state_dict=  torch.load('GraphCL/gnn_pretrain.pt', map_location='cpu')        
         self.gnn.load_state_dict(state_dict, strict=False)
 
         self.fc1 = nn.Sequential(

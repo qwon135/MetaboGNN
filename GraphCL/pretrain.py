@@ -14,6 +14,7 @@ from matplotlib import pyplot as plt
 from torch_ema import ExponentialMovingAverage
 
 from modules.dualgraph.gnn import GNN
+from modules.dualgraph.mol import smiles2graphwithface
 
 from torch_geometric.data import Dataset, InMemoryDataset
 from modules.dualgraph.dataset import DGData
@@ -68,15 +69,39 @@ class CustomDataset(InMemoryDataset):
     def get(self, idx):
         sid = self.sid_list[idx]
         dset = self.dataset_list[idx]
-        origin_graph =  torch.load(f'graph_pt/{sid}.pt')
+        # origin_graph =  torch.load(f'graph_pt/{sid}.pt')
+        smiles = self.smiles_list[idx]
+        origin_graph = self.get_graph(smiles)
         mask_graph1 = mask_edges(mask_nodes(copy.deepcopy(origin_graph), 0.3), 0.15)
         mask_graph2 = mask_edges(mask_nodes(copy.deepcopy(origin_graph), 0.15), 0.3)         
 
         return (origin_graph, mask_graph1, mask_graph2)
 
+    def get_graph(self, smiles):
+        data = DGData()
+
+        graph = smiles2graphwithface(smiles)
+
+        data.__num_nodes__ = int(graph["num_nodes"])
+        data.edge_index = torch.from_numpy(graph["edge_index"]).to(torch.int64)
+        data.edge_attr = torch.from_numpy(graph["edge_feat"]).to(torch.int64)
+        data.x = torch.from_numpy(graph["node_feat"]).to(torch.int64)
+
+        data.ring_mask = torch.from_numpy(graph["ring_mask"]).to(torch.bool)
+        data.ring_index = torch.from_numpy(graph["ring_index"]).to(torch.int64)
+        data.nf_node = torch.from_numpy(graph["nf_node"]).to(torch.int64)
+        data.nf_ring = torch.from_numpy(graph["nf_ring"]).to(torch.int64)
+        data.num_rings = int(graph["num_rings"])
+        data.n_edges = int(graph["n_edges"])
+        data.n_nodes = int(graph["n_nodes"])
+        data.n_nfs = int(graph["n_nfs"])
+        
+        return data
+
     def process(self):                
-        self.sid_list = self.df['sid'].values
-        self.dataset_list = self.df['dataset'].values
+        self.sid_list = self.df['MOL_ID'].values
+        self.dataset_list = self.df['dataset_name'].values
+        self.smiles_list = self.df['smiles'].values
 
 triplet_loss = nn.TripletMarginLoss(margin=0.0, p=2)
 criterion = nn.CrossEntropyLoss()
@@ -116,7 +141,7 @@ class MedModel(torch.nn.Module):
         mol = self.gnn(batch).squeeze(1)
         return self.proj(mol)
 
-data = pd.read_parquet('data.parquet')
+data = pd.read_parquet('GraphCL/data.parquet')
 
 train_dataset = CustomDataset(df = data)
 train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers = 8)
@@ -138,9 +163,6 @@ def loss_cl(x1, x2):
     loss = pos_sim / (sim_matrix.sum(dim=1) - pos_sim)
     loss = - torch.log(loss).mean()
     return loss
-
-if not os.path.exists('ckpt_pretrain'):
-    os.mkdir('ckpt_pretrain')
 
 best_loss = 1e6
 start = 2
