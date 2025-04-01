@@ -16,9 +16,10 @@ We recommend using Python 3.9+ and a virtual environment.
 git clone https://github.com/qwon135/MetaboGNN.git
 cd MetaboGNN
 pip install -r requirements.txt
-
+```
 If you are using conda:
 
+```bash
 conda create -n metabo_gnn python=3.9
 conda activate metabo_gnn
 pip install -r requirements.txt
