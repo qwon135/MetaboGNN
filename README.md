@@ -22,7 +22,7 @@ If you are using conda:
 conda create -n metabo_gnn python=3.9
 conda activate metabo_gnn
 pip install -r requirements.txt
-
+```
 ## Project Structure
 
 MetaboGNN/
@@ -39,7 +39,9 @@ MetaboGNN/
 ## How to Run
 ### 1. Pretraining
 
+```bash
 PYTHONPATH=. python GraphCL/pretrain.py
+```
 
 ### 2. Fine-tuning Experiments
 
@@ -54,3 +56,4 @@ python finetune_scratch.py
 
 python finetune_base.py
 # Representation-only: Evaluates pretrained GNN without metabolic stability fine-tuning
+```
