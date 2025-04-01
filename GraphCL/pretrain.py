@@ -116,22 +116,7 @@ class MedModel(torch.nn.Module):
         mol = self.gnn(batch).squeeze(1)
         return self.proj(mol)
 
-data = pd.read_csv('pretrain/zinc_combined_apr_8_2019.csv', index_col=None)
-data = data[['zinc_id', 'smiles']]
-data.columns = ['sid', 'smiles']
-data['dataset'] = 'zinc_combined_apr_8_2019'
-for csv in tqdm(os.listdir( 'pretrain/')):
-    if 'zinc' in csv:
-        continue
-    df = pd.read_csv(f'pretrain/{csv}', index_col=None)                    
-    df['dataset'] = csv[:-4]
-    df['sid'] = csv[:-4] + '_' +  df.reset_index()['index'].astype(str)
-    if csv[:-4] == 'bace':
-        df = df[['sid', 'dataset', 'mol']]
-        df.columns = ['sid', 'dataset', 'smiles']
-    else:
-        df = df[['sid', 'dataset', 'smiles']]
-    data = pd.concat([data, df]).reset_index(drop=True)
+data = pd.read_csv('pretrain_data.csv', index_col=None)
 
 train_dataset = CustomDataset(df = data)
 train_loader = DataLoader(train_dataset, batch_size=256, shuffle=True, num_workers = 8)
@@ -184,17 +169,7 @@ for epoch in range(1, 31):
 
     if train_loss < best_loss:
         best_loss = train_loss
-        torch.save(model.gnn.state_dict(), f'ckpt_pretrain/ognn_pretrain_best.pt')
+        torch.save(model.gnn.state_dict(), f'gnn_pretrain.pt')
     
     scheduler.step()
-    torch.save(
-            {
-            'optimizer_state_dict': optim.state_dict(),
-            'model_state_dict': model.state_dict(),
-            'gnn_state_dict' : model.gnn.state_dict(),
-            'scheduler_state_dict': scheduler.state_dict(),
-            'ema_state_dict' : ema.state_dict()
-            },            
-            f'ckpt_pretrain/ognn_pretrain_epoch_{epoch}.pt')
-
     print(f'EPOCH : {epoch} | train_loss : {train_loss/len(train_loader):.4f}')    
