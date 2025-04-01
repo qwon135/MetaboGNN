@@ -25,6 +25,7 @@ pip install -r requirements.txt
 ```
 ## Project Structure
 
+```bash
 MetaboGNN/
 │
 ├── data/                 # Data files (may need to be downloaded separately)
@@ -35,6 +36,7 @@ MetaboGNN/
 ├── inference.py          # Evaluation / Prediction
 ├── requirements.txt      # Required Python packages
 └── README.md             # This file
+```
 
 ## How to Run
 ### 1. Pretraining
