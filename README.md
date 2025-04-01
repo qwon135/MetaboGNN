@@ -67,7 +67,7 @@ python finetune_base.py
 # Representation-only: Evaluates pretrained GNN without cross-species fine-tuning
 ```
 
-## 3. Model Interpretability
+### 3. Model Interpretability
 
 We provide a Jupyter notebook that visualizes how the model interprets molecular structures, focusing on bond-level features.
 
