@@ -29,14 +29,18 @@ pip install -r requirements.txt
 ```bash
 MetaboGNN/
 │
-├── data/                 # Data files (may need to be downloaded separately)
-├── models/               # GNN model implementations
-├── utils/                # Utility functions
-├── configs/              # Configuration YAML files
-├── train.py              # Main training script
-├── inference.py          # Evaluation / Prediction
-├── requirements.txt      # Required Python packages
-└── README.md             # This file
+├── Benchmark/               # Baseline methods (e.g., MS_BACL, PredMS) from previous studies for performance comparison
+├── data/                    # Dataset for liver metabolic stability prediction 
+├── EdgeShaper/              # Utilities for bond-level interpretability and visualization
+├── GraphCL/                 # Code for self-supervised pretraining 
+├── modules/                 # Core GNN model components and training utilities
+├── edgeshaper.ipynb         # Jupyter notebook to visualize bond-level model interpretation
+├── finetune.py              # Fine-tuning with pretrained model on cross-species metabolic stability prediction
+├── finetune_scratch.py      # Training from scratch (no pretraining or cross-species)
+├── finetune_base.py         # Evaluation of pretrained model without cross-species fine-tuning
+├── requirements.txt         # Python dependencies
+└── README.md                # Project documentation
+
 ```
 
 ## How to Run
