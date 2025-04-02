@@ -148,4 +148,4 @@ The resulting performance plots are shown below.
 
 For more details on the evaluation protocols, please refer to each method’s original paper and official code repository.
 
-![Performance comparison](.Benchmark/Performance_benchmark.png)
+![Performance comparison](Benchmark/Performance_benchmark.png)
