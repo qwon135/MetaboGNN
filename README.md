@@ -15,23 +15,30 @@ We recommend using Python 3.9+ and a virtual environment.
 ```bash
 git clone https://github.com/qwon135/MetaboGNN.git
 cd MetaboGNN
-pip install -r requirements.txt
 ```
 ### ⚠️ CUDA Runtime Requirement
 
-This environment requires CUDA 11.8 to run properly.
+This project uses PyTorch with GPU acceleration, and requires:
 
-Please make sure your system has:
-- NVIDIA GPU with driver version ≥ 520.x
-- CUDA 11.8 runtime installed (not just the toolkit)
+✅ NVIDIA GPU
+
+✅ Driver version ≥ 520 (supports CUDA 11.8)
+
+✅ CUDA 11.8 Runtime
+
+You do not need to install the full CUDA Toolkit.
+The runtime only is enough.
 
 ✅ You can check your driver version with:
 ```bash
 nvidia-smi
 ```
-🔗 Download CUDA 11.8 Runtime:
-https://developer.nvidia.com/cuda-11-8-0-download-archive
 
+### 🔗 Download CUDA 11.8 Runtime:
+If `nvidia-smi`` does not work or your driver is outdated, install the latest version here:
+👉 https://developer.nvidia.com/cuda-11-8-0-download-archive
+
+### 🧪 Environment Setup (with conda)
 If you are using conda:
 
 ```bash
