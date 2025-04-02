@@ -38,7 +38,6 @@ If `nvidia-smi` does not work or your driver is outdated, install the latest ver
 👉 https://developer.nvidia.com/cuda-11-8-0-download-archive
 
 ### 🧪 Environment Setup (with conda)
-If you are using conda:
 
 ```bash
 conda create -n metabo_gnn python=3.9
@@ -74,6 +73,7 @@ MetaboGNN/
 ├── modules/                 # Core GNN model components and training utilities
 ├── edgeshaper.ipynb         # Jupyter notebook to visualize bond-level model interpretation
 ├── train.py                 # Training GNN
+├── infer.py                 # Inference GNN
 ├── requirements.txt         # Python dependencies
 └── README.md                # Project documentation
 
