@@ -124,9 +124,9 @@ python infer.py
 >> Base       MLM: 28.393290  HLM: 30.315741
 >> MetaboGNN  MLM: 27.884719  HLM: 28.387205
 ```
-This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (performance.png) that visualizes their performance.
+This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (Performance.png) that visualizes their performance.
 
-![Model performance comparison](./performance.png)
+![Model performance comparison](./Performance.png)
 
 ### 3. Model Interpretability
 
