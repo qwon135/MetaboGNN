@@ -82,5 +82,3 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 - `edgeshaper.ipynb`: Highlights important chemical bonds based on attention weights or gradient-based signals.
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
-
-https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing

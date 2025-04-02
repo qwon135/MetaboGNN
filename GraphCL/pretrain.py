@@ -117,7 +117,6 @@ class MedModel(torch.nn.Module):
                         latent_size = 128,
                         use_layer_norm = False,
                         use_face=True,
-                        # residual = True,
                         ddi=self.ddi,
                         dropedge_rate = 0.1,
                         dropnode_rate = 0.1,
@@ -127,10 +126,8 @@ class MedModel(torch.nn.Module):
                         node_reducer = "sum",
                         face_reducer = "sum",
                         graph_pooling = "sum",
-                        # global_attn = True,
                         node_attn = True,
-                        face_attn = True
-                        # use_bn=True
+                        face_attn = True                        
                         )                
         self.proj = nn.Sequential(
                         nn.Linear(128, 128),
