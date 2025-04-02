@@ -139,3 +139,13 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 - `edgeshaper.ipynb`: Highlights important chemical bonds based on attention weights or gradient-based signals.
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
+
+### 4. Benchmark
+We provide benchmarking experiments comparing MetaboGNN with prior methods such as MS_BACL and PredMS.
+
+You can run the code in each subdirectory to reproduce the results.
+The resulting performance plots are shown below.
+
+For more details on the evaluation protocols, please refer to each method’s original paper and official code repository.
+
+![Performance comparison](./Performance_benchmark.png)
