@@ -20,9 +20,9 @@ cd MetaboGNN
 
 This project uses PyTorch with GPU acceleration, and requires:
 
-✅ NVIDIA GPU (with at least 6–8GB VRAM recommended)
-✅ Driver version ≥ 520 (supports CUDA 11.8)
-✅ CUDA 11.8 Runtime
+- ✅ NVIDIA GPU (with at least 6–8GB VRAM recommended)
+- ✅ Driver version ≥ 520 (supports CUDA 11.8)
+- ✅ CUDA 11.8 Runtime
 
 💡 Our experiments typically use 4–6GB of VRAM, but for stable training and inference, we recommend using a GPU with at least 8GB VRAM.
 
