@@ -204,8 +204,9 @@ def main():
     
     # 결과 표시
     results_df = pd.DataFrame(results)
-    print(results_df.to_string(index=False))
-    
+    for i, row in results_df.iterrows():
+        print(f"[{row['Model']:>10}]  MLM RMSE: {row['MLM RMSE']:.2f}  |  HLM RMSE: {row['HLM RMSE']:.2f}")
+
     # 결과 시각화
     plt.figure(figsize=(10, 6))
     bar_width = 0.35

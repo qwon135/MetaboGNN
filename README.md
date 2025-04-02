@@ -124,10 +124,9 @@ After training, you can compare performance across the three models by running:
 ```bash
 python infer.py
 
->> Model Performance (RMSE)
->> Scratch    MLM: 29.085476  HLM: 30.793824
->> Base       MLM: 28.393290  HLM: 30.315741
->> MetaboGNN  MLM: 27.884719  HLM: 28.387205
+>> [   Scratch]  MLM RMSE: 29.09  |  HLM RMSE: 30.79
+>> [      Base]  MLM RMSE: 28.39  |  HLM RMSE: 30.32
+>> [ MetaboGNN]  MLM RMSE: 27.88  |  HLM RMSE: 28.39
 ```
 This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (Performance.png) that visualizes their performance.
 
