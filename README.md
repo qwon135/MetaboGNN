@@ -67,9 +67,7 @@ MetaboGNN/
 ├── GraphCL/                 # Code for self-supervised pretraining 
 ├── modules/                 # Core GNN model components and training utilities
 ├── edgeshaper.ipynb         # Jupyter notebook to visualize bond-level model interpretation
-├── finetune.py              # Fine-tuning with pretrained model on cross-species metabolic stability prediction
-├── finetune_scratch.py      # Training from scratch (no pretraining or cross-species)
-├── finetune_base.py         # Evaluation of pretrained model without cross-species fine-tuning
+├── train.py                 # Training GNN
 ├── requirements.txt         # Python dependencies
 └── README.md                # Project documentation
 
@@ -96,16 +94,39 @@ PYTHONPATH=. python GraphCL/pretrain.py
 
 We provide three fine-tuning scenarios for ablation and comparison:
 
+🚀 Training the Models
+
 ```bash
-python finetune.py
-# Main experiment: Fine-tuning pretrained GNN on cross-species metabolic stability task
-
-python finetune_scratch.py
-# Ablation: Training from scratch without pretraining for comparison
-
-python finetune_base.py
-# Representation-only: Evaluates pretrained GNN without cross-species fine-tuning
+python train.py --mode MetaboGNN # Main experiment: Fine-tuning pretrained GNN on cross-species metabolic stability task
+python train.py --mode Scratch # Ablation: Training from scratch without pretraining for comparison
+python train.py --mode Base # Representation-only: Evaluates pretrained GNN without cross-species fine-tuning
 ```
+If you want to skip the training step and directly reproduce the inference results, you can download the pretrained model checkpoints from Google Drive:
+🔗 [Download checkpoints (ckpt.zip)](https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing)
+Unzip ckpt.zip into the project root directory so that the following structure is maintained:
+
+```bash
+├── ckpt/
+│   ├── 2025_MetaboGNN.pt
+│   ├── 2025_Base.pt
+│   └── 2025_Scratch.pt
+```
+
+📈 Evaluating Model Performance
+
+After training, you can compare performance across the three models by running:
+
+```bash
+python infer.py
+
+>> Model Performance (RMSE)
+>> Scratch    MLM: 29.085476  HLM: 30.793824
+>> Base       MLM: 28.393290  HLM: 30.315741
+>> MetaboGNN  MLM: 27.884719  HLM: 28.387205
+```
+This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (performance.png) that visualizes their performance.
+
+![Model performance comparison](./performance.png)
 
 ### 3. Model Interpretability
 
@@ -114,5 +135,3 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 - `edgeshaper.ipynb`: Highlights important chemical bonds based on attention weights or gradient-based signals.
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
-
-https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing

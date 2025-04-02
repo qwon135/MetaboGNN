@@ -12,7 +12,7 @@ from glob import glob
 from modules.dualgraph.mol import smiles2graphwithface
 from modules.dualgraph.gnn import GNN
 from torch.nn.utils import clip_grad_norm_
-
+from sklearn.model_selection import train_test_split
 import torch_geometric
 from torch_geometric.data import Dataset, InMemoryDataset
 from modules.dualgraph.dataset import DGData
@@ -20,8 +20,6 @@ from torch_geometric.loader import DataLoader
 import dgl
 import warnings
 warnings.filterwarnings("ignore")
-
-#python ognn_res.py --fold 1 --seed 2023
 
 def seed_everything(seed: int = 42):
     random.seed(seed)
@@ -39,6 +37,20 @@ def seed_worker(worker_id):
     worker_seed = torch.initial_seed() % 2**32
     np.random.seed(worker_seed)
     random.seed(worker_seed)
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--seed", type=int, default=2025)
+    parser.add_argument("--save_path", default='ckpt', type=str)        
+    parser.add_argument("--fold", type=int, default=1)
+    parser.add_argument("--device", type=str, default='cuda')
+    parser.add_argument("--mode", type=str, default='MetaboGNN', 
+                        choices=['MetaboGNN', 'Base', 'Scratch'])
+    
+    args = parser.parse_args()
+    return args
+
 
 class CustomDataset(InMemoryDataset):
     def __init__(self, root='dataset_path', transform=None, pre_transform=None, df=None, target_type='MLM', mode='train'):
@@ -61,7 +73,6 @@ class CustomDataset(InMemoryDataset):
 
     def get(self, idx):
         return self.graph_list[idx]
-
 
     def process(self):        
         smiles_list = self.df["SMILES"].values
@@ -93,15 +104,19 @@ class CustomDataset(InMemoryDataset):
         self.graph_list = data_list
         self.targets_list = targets_list
 
-class MedModel(torch.nn.Module):
+class MetaboGNN(torch.nn.Module):
 
-    def __init__(self):
-        super(MedModel, self).__init__()
+    def __init__(self, mode):
+        super(MetaboGNN, self).__init__()
+        self.mode = mode
         self.ddi = True
         self.gnn = GNN(mlp_hidden_size = 512, mlp_layers = 2, latent_size = 128, use_layer_norm = False,
                         use_face=True, ddi=self.ddi, dropedge_rate = 0.1, dropnode_rate = 0.1, dropout = 0.1,
                         dropnet = 0.1, global_reducer = "sum", node_reducer = "sum", face_reducer = "sum", graph_pooling = "sum",                        
                         node_attn = True, face_attn = True)
+        if self.mode != 'Scratch':
+            state_dict=  torch.load('GraphCL/gnn_pretrain.pt', map_location='cpu')
+            self.gnn.load_state_dict(state_dict, strict=False)
 
         self.fc1 = nn.Sequential(
                     nn.LayerNorm(128),
@@ -125,9 +140,13 @@ class MedModel(torch.nn.Module):
 
     def forward(self, batch):
         mol = self.gnn(batch)
-        # mol = self.mol_extractor(mol) + mol
+
         out1 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
-        out2 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
+        if self.mode == 'MetaoGNN':
+            out2 = (torch.sigmoid(self.fc2(mol).squeeze(1))-0.5) * 200
+        else:
+            out2 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
+
         return out1, out2
 
 def correlation_score(y_true, y_pred):
@@ -142,16 +161,44 @@ def correlation_score(y_true, y_pred):
 def correlation_loss(pred, target):
     return -torch.mean(correlation_score(target.unsqueeze(0), pred.unsqueeze(0)))
 
-def parse_args():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--seed", type=int, default=2023)
-    parser.add_argument("--save_path", default='ckpt_scratch', type=str)        
-    parser.add_argument("--fold", type=int, default=1)
-    parser.add_argument("--device", type=str, default='cuda')
-    args = parser.parse_args()
+def inference(model, test_loader, mode):
+    if mode == 'MetaboGNN':
+        test_pred_MLM, test_pred_RES = [], []
+        test_true_MLM, test_true_HLM = [], []             
 
-    return args
-from sklearn.model_selection import train_test_split
+        for batch in test_loader:
+            with torch.no_grad():                    
+                pred_mlm, pred_res = model(batch.to(args.device))
+            targets = batch.y.to(args.device)                
+            target_mlm, target_hlm = targets[:, 0], targets[:, 1]
+
+            test_pred_MLM += pred_mlm.cpu().tolist()
+            test_pred_RES += pred_res.cpu().tolist()
+
+            test_true_HLM += target_hlm.cpu().tolist()
+            test_true_MLM += target_mlm.cpu().tolist()
+
+        test_pred_MLM, test_pred_RES = np.array(test_pred_MLM), np.array(test_pred_RES)
+        test_pred_HLM = test_pred_MLM - test_pred_RES
+    else:
+        test_pred_MLM, test_pred_HLM = [], []
+        test_true_MLM, test_true_HLM = [], []             
+
+        for batch in test_loader:
+            with torch.no_grad():                    
+                pred_mlm, pred_hlm = model(batch.to(args.device))
+            targets = batch.y.to(args.device)                
+            target_mlm, target_hlm = targets[:, 0], targets[:, 1]
+
+            test_pred_MLM += pred_mlm.cpu().tolist()
+            test_pred_HLM += pred_hlm.cpu().tolist()
+
+            test_true_HLM += target_hlm.cpu().tolist()
+            test_true_MLM += target_mlm.cpu().tolist()
+
+        test_pred_MLM, test_pred_HLM = np.array(test_pred_MLM), np.array(test_pred_HLM)
+    return test_pred_MLM, test_true_MLM, test_pred_HLM, test_true_HLM
+
 def main(args):
     seed_everything(args.seed)
     data = pd.read_csv('data/train_paper.csv', index_col=None)
@@ -172,7 +219,7 @@ def main(args):
     test_dataset = CustomDataset(df = test, mode='test', target_type='MLM')
     test_loader = DataLoader(test_dataset, batch_size=128, shuffle=False, num_workers = 8) 
 
-    model = MedModel().to(args.device)
+    model = MetaboGNN(mode=args.mode).to(args.device)
     mse_loss = nn.MSELoss()
     optim = torch.optim.AdamW(model.parameters(), lr=5e-4)
     ema = ExponentialMovingAverage(model.parameters(), decay=0.995)
@@ -188,12 +235,21 @@ def main(args):
         for batch in train_loader:
             batch = batch.to(args.device)
             
-            pred_mlm, pred_hlm = model(batch)
-            targets = batch.y.to(args.device)
-            target_mlm, target_hlm = targets[:, 0], targets[:, 1]
+            if args.mode == 'MetaboGNN':
+                pred_mlm, pred_res = model(batch)
+            
+                targets = batch.y.to(args.device)
+                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
+                
+                loss2 = mse_loss(pred_mlm-pred_res, target_hlm)
+            else:
+                pred_mlm, pred_hlm = model(batch)
+                targets = batch.y.to(args.device)
+                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
 
-            loss1 = mse_loss(pred_mlm, target_mlm) * 0.8 + correlation_loss(pred_mlm, target_mlm) * 0.2
-            loss2 = mse_loss(pred_hlm, target_hlm) * 0.8 + correlation_loss(pred_hlm, target_hlm) * 0.2
+                loss2 = mse_loss(pred_hlm, target_hlm)
+
+            loss1 = mse_loss(pred_mlm, target_mlm) 
 
             loss = (loss1 + loss2)/2
 
@@ -205,22 +261,8 @@ def main(args):
             
             train_loss += loss.cpu().item()
         
-        model.eval()            
-        valid_preds_mlm, valid_label_mlm, valid_label_hlm, valid_preds_hlm = [], [], [], []         
-
-        for batch in valid_loader:
-            batch = batch.to(args.device)
-            with torch.no_grad():
-                pred_mlm, pred_hlm = model(batch)
-                targets = batch.y.to(args.device)
-                
-                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
-                
-                valid_label_hlm += target_hlm.cpu().tolist()
-                valid_preds_hlm += pred_hlm.cpu().tolist()
-
-                valid_label_mlm += target_mlm.cpu().tolist()
-                valid_preds_mlm += pred_mlm.cpu().tolist()
+        model.eval()                    
+        valid_preds_mlm, valid_label_mlm, valid_label_hlm, valid_preds_hlm = inference(model, valid_loader, args.mode)
         
         mlm_rmse = mean_squared_error(valid_preds_mlm, valid_label_mlm) ** (1/2)
         hlm_rmse = mean_squared_error(valid_preds_hlm, valid_label_hlm) ** (1/2)
@@ -228,25 +270,10 @@ def main(args):
         val_loss = (mlm_rmse + hlm_rmse)/2
         if val_loss < best_val_loss:
             best_val_loss = val_loss
-            torch.save(model.state_dict(), f'{args.save_path}/{args.seed}.pt')
+            torch.save(model.state_dict(), f'{args.save_path}/{args.seed}_{args.mode}.pt')
             print(f'EPOCH : {epoch} | T_LOSS : {train_loss / len(train_loader):.4f} | MLM_RMSE : {mlm_rmse:.2f} | HLM_RMSE : {hlm_rmse:.2f} | BEST : {best_val_loss:.2f}') 
 
-            test_pred_MLM, test_pred_HLM = [], []
-            test_true_MLM, test_true_HLM = [], []             
-
-            for batch in test_loader:
-                with torch.no_grad():                    
-                    pred_mlm, pred_hlm = model(batch.to(args.device))
-                targets = batch.y.to(args.device)                
-                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
-
-                test_pred_MLM += pred_mlm.cpu().tolist()
-                test_pred_HLM += pred_hlm.cpu().tolist()
-
-                test_true_HLM += target_hlm.cpu().tolist()
-                test_true_MLM += target_mlm.cpu().tolist()
-
-            test_pred_MLM, test_pred_HLM = np.array(test_pred_MLM), np.array(test_pred_HLM)
+            test_pred_MLM, test_true_MLM, test_pred_HLM, test_true_HLM = inference(model, test_loader, args.mode)
 
             test_mlm_rmse = mean_squared_error(test_pred_HLM, test_true_HLM) ** (1/2)
             test_hlm_rmse = mean_squared_error(test_pred_MLM, test_true_MLM) ** (1/2)
