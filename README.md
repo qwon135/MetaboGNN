@@ -17,13 +17,38 @@ git clone https://github.com/qwon135/MetaboGNN.git
 cd MetaboGNN
 pip install -r requirements.txt
 ```
+### ⚠️ CUDA Runtime Requirement
+
+This environment requires CUDA 11.8 to run properly.
+
+Please make sure your system has:
+- NVIDIA GPU with driver version ≥ 520.x
+- CUDA 11.8 runtime installed (not just the toolkit)
+
+✅ You can check your driver version with:
+```bash
+nvidia-smi
+```
+🔗 Download CUDA 11.8 Runtime:
+https://developer.nvidia.com/cuda-11-8-0-download-archive
+
 If you are using conda:
 
 ```bash
 conda create -n metabo_gnn python=3.9
 conda activate metabo_gnn
+
+conda install pytorch==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia
+conda install -c dglteam/label/th21_cu118 dgl
+conda install conda-forge::pytorch_geometric
+
+conda install pytorch-scatter=2.1.2 -c pyg
+conda install pytorch-sparse=0.6.18 -c pyg
+
 pip install -r requirements.txt
 ```
+
+
 ## Project Structure
 
 ```bash
@@ -82,3 +107,5 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 - `edgeshaper.ipynb`: Highlights important chemical bonds based on attention weights or gradient-based signals.
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
+
+https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing
