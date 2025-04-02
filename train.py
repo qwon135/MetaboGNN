@@ -142,7 +142,7 @@ class MetaboGNN(torch.nn.Module):
         mol = self.gnn(batch)
 
         out1 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
-        if self.mode == 'MetaoGNN':
+        if self.mode == 'MetaboGNN':
             out2 = (torch.sigmoid(self.fc2(mol).squeeze(1))-0.5) * 200
         else:
             out2 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
@@ -234,19 +234,14 @@ def main(args):
         train_loss = 0
         for batch in train_loader:
             batch = batch.to(args.device)
-            
+            targets = batch.y.to(args.device)
+            target_mlm, target_hlm = targets[:, 0], targets[:, 1]
+
             if args.mode == 'MetaboGNN':
-                pred_mlm, pred_res = model(batch)
-            
-                targets = batch.y.to(args.device)
-                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
-                
+                pred_mlm, pred_res = model(batch)                                        
                 loss2 = mse_loss(pred_mlm-pred_res, target_hlm)
             else:
                 pred_mlm, pred_hlm = model(batch)
-                targets = batch.y.to(args.device)
-                target_mlm, target_hlm = targets[:, 0], targets[:, 1]
-
                 loss2 = mse_loss(pred_hlm, target_hlm)
 
             loss1 = mse_loss(pred_mlm, target_mlm) 

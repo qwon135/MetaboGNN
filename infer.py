@@ -86,6 +86,7 @@ class CustomDataset(InMemoryDataset):
         self.targets_list = targets_list
 
 class MetaboGNN(torch.nn.Module):
+
     def __init__(self, mode):
         super(MetaboGNN, self).__init__()
         self.mode = mode
@@ -120,14 +121,13 @@ class MetaboGNN(torch.nn.Module):
 
     def forward(self, batch):
         mol = self.gnn(batch)
-
         out1 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
-        if self.mode == 'MetaoGNN':
+        if self.mode == 'MetaboGNN':
             out2 = (torch.sigmoid(self.fc2(mol).squeeze(1))-0.5) * 200
         else:
-            out2 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100        
-
+            out2 = torch.sigmoid(self.fc1(mol).squeeze(1)) * 100
         return out1, out2
+    
 def evaluate_model(model, test_loader, device, model_name):
     """모델 평가 함수"""
     model.eval()
@@ -188,7 +188,7 @@ def main():
     
     # 모델 2: Base 평가
     model_base = MetaboGNN(mode='Base').to(device)
-    model_base.load_state_dict(torch.load('ckpt/2025_base.pt'))
+    model_base.load_state_dict(torch.load('ckpt/2025_Base.pt'))
     mlm_rmse, hlm_rmse = evaluate_model(model_base, test_loader, device, "Base")
     results['Model'].append('Base')
     results['MLM RMSE'].append(mlm_rmse)
@@ -196,7 +196,7 @@ def main():
     
     # 모델 3: MetaboGNN 평가
     model_metabognn = MetaboGNN(mode='MetaboGNN').to(device)
-    model_metabognn.load_state_dict(torch.load('ckpt/2025.pt'))
+    model_metabognn.load_state_dict(torch.load('ckpt/2025_MetaboGNN.pt'))
     mlm_rmse, hlm_rmse = evaluate_model(model_metabognn, test_loader, device, "MetaboGNN")
     results['Model'].append('MetaboGNN')
     results['MLM RMSE'].append(mlm_rmse)
@@ -214,6 +214,9 @@ def main():
     plt.bar(index, results['MLM RMSE'], bar_width, label='MLM RMSE', color='skyblue')
     plt.bar(index + bar_width, results['HLM RMSE'], bar_width, label='HLM RMSE', color='salmon')
     
+    ymax = max(max(results['MLM RMSE']), max(results['HLM RMSE'])) + 1  # 최대값 + 여유공간
+    plt.ylim(25, ymax)
+
     plt.xlabel('Model')
     plt.ylabel('RMSE')
     plt.title('Model Comparison')
