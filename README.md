@@ -86,8 +86,7 @@ The dataset used for pretraining is not included in this repository due to licen
 
 📁 [Download pretraining dataset](https://drive.google.com/drive/folders/1Vowev9pZtRBFOXA_zCN9YTLO9ECIKEV7?usp=sharing)
 
-After downloading, please place the extracted files inside the `GraphCL/` directory so that the training script can access them.
-
+Please download the data.parquet file from the provided link and place it inside the GraphCL/ directory as shown below:
 We also provide a pretrained model checkpoint (`GraphCL/gnn_pretrain.pt`) for users who wish to skip this step.
 
 To perform self-supervised pretraining from scratch, run:

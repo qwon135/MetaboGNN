@@ -263,16 +263,23 @@ def main(args):
         hlm_rmse = mean_squared_error(valid_preds_hlm, valid_label_hlm) ** (1/2)
 
         val_loss = (mlm_rmse + hlm_rmse)/2
+        print(f"EPOCH {epoch:02d} | TRAIN LOSS: {train_loss / len(train_loader):.1f}")
+
         if val_loss < best_val_loss:
+            print()
+            print(f"\n🔥 Validation loss improved: {best_val_loss:.2f} → {val_loss:.2f}")
             best_val_loss = val_loss
             torch.save(model.state_dict(), f'{args.save_path}/{args.seed}_{args.mode}.pt')
-            print(f'EPOCH : {epoch} | T_LOSS : {train_loss / len(train_loader):.4f} | MLM_RMSE : {mlm_rmse:.2f} | HLM_RMSE : {hlm_rmse:.2f} | BEST : {best_val_loss:.2f}') 
 
             test_pred_MLM, test_true_MLM, test_pred_HLM, test_true_HLM = inference(model, test_loader, args.mode)
 
-            test_mlm_rmse = mean_squared_error(test_pred_HLM, test_true_HLM) ** (1/2)
-            test_hlm_rmse = mean_squared_error(test_pred_MLM, test_true_MLM) ** (1/2)
-            print(f'EPOCH : {epoch} | TEST MLM : {test_mlm_rmse:.2f} | TEST HLM : {test_hlm_rmse:.2f}') 
+            test_mlm_rmse = mean_squared_error(test_pred_HLM, test_true_HLM) ** 0.5
+            test_hlm_rmse = mean_squared_error(test_pred_MLM, test_true_MLM) ** 0.5
+
+            print(f"🔍 Evaluating on test set:")
+            print(f"    ▶ TEST MLM RMSE : {test_mlm_rmse:.2f}")
+            print(f"    ▶ TEST HLM RMSE : {test_hlm_rmse:.2f}\n")
+
             print()
 
         scheduler.step()
