@@ -10,7 +10,7 @@ This code was developed as part of our study:
 
 ## 📦 Installation
 
-We recommend using Python 3.9+ and a virtual environment.
+This project is tested and recommended to run on Ubuntu (Linux) environments with Python 3.9+ and GPU support.
 
 ```bash
 git clone https://github.com/qwon135/MetaboGNN.git
@@ -20,14 +20,13 @@ cd MetaboGNN
 
 This project uses PyTorch with GPU acceleration, and requires:
 
-✅ NVIDIA GPU
-
+✅ NVIDIA GPU (with at least 6–8GB VRAM recommended)
 ✅ Driver version ≥ 520 (supports CUDA 11.8)
-
 ✅ CUDA 11.8 Runtime
 
-You do not need to install the full CUDA Toolkit.
-The runtime only is enough.
+💡 Our experiments typically use 4–6GB of VRAM, but for stable training and inference, we recommend using a GPU with at least 8GB VRAM.
+
+You do not need to install the full CUDA Toolkit — the runtime only is enough.
 
 ✅ You can check your driver version with:
 ```bash
@@ -45,16 +44,23 @@ If you are using conda:
 conda create -n metabo_gnn python=3.9
 conda activate metabo_gnn
 
+# Install PyTorch 2.1 + CUDA 11.8
 conda install pytorch==2.1.2 pytorch-cuda=11.8 -c pytorch -c nvidia
-conda install -c dglteam/label/th21_cu118 dgl
-conda install conda-forge::pytorch_geometric
 
+# Install DGL with CUDA 11.8
+conda install -c dglteam/label/th21_cu118 dgl
+
+# Install PyTorch Geometric (PyG)
+conda install conda-forge::pytorch_geometric
 conda install pytorch-scatter=2.1.2 -c pyg
 conda install pytorch-sparse=0.6.18 -c pyg
 
+# 📝 Note:
+# Make sure the CUDA versions match across PyTorch, DGL, and PyG.
+# If any installation fails, try upgrading pip & setuptools:
+# python -m pip install --upgrade pip setuptools
 pip install -r requirements.txt
 ```
-
 
 ## Project Structure
 
