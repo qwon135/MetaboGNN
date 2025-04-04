@@ -149,3 +149,8 @@ The resulting performance plots are shown below.
 For more details on the evaluation protocols, please refer to each method’s original paper and official code repository.
 
 ![Performance comparison](Benchmark/Performance_benchmark.png)
+
+### 📊 Benchmark Performance Comparison
+
+We also provide a Jupyter notebook, Performance_comparison.ipynb, which generates a comparative figure summarizing the performance of MetaboGNN against baseline models (MS_BACL, PredMS).
+
