@@ -33,9 +33,9 @@ You do not need to install the full CUDA Toolkit — the runtime only is enough.
 nvidia-smi
 ```
 
-### 🔗 Download CUDA 11.8 Runtime:
-If `nvidia-smi` does not work or your driver is outdated, install the latest version here:
-👉 https://developer.nvidia.com/cuda-11-8-0-download-archive
+🔗 Download CUDA 11.8 Runtime:
+- MetaboGNN is tested with CUDA 11.8. If `nvidia-smi` does not work or your driver is outdated, install the CUDA 11.8 runtime (used in our experiments) 
+- here: 👉 https://developer.nvidia.com/cuda-11-8-0-download-archive
 
 ### 🧪 Environment Setup (with conda)
 
