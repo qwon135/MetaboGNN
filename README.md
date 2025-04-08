@@ -176,4 +176,15 @@ python run_predict.py --csv ./data/test_paper.csv --save_dir ./outputs
 ```
 
   - Runs inference on all SMILES in the file.
+  - The CSV file must include a column named SMILES.
   - Saves predictions to ./outputs, no console output.
+
+#### 🔍 Option 3: Using an SDF file
+Use the --sdf flag with an .sdf file containing molecular structures:
+
+```bash
+python run_predict.py --sdf ./data/input_example.sdf --save_dir ./outputs
+```
+
+  - Extracts SMILES from the SDF file for prediction.
+  - Saves results to a timestamped CSV in ./outputs, no console output.
