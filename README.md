@@ -140,6 +140,7 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
   - Helps identify which bonds are most influential in predicting liver metabolic stability.
   - Requires a fine-tuned model (stored in the `ckpt/` directory).
 
+
 ### 4. Benchmark
 We provide benchmarking experiments comparing MetaboGNN with prior methods such as MS_BACL and PredMS.
 You can run the code in each subdirectory to reproduce the results, and the resulting performance plots are shown below.
@@ -150,8 +151,9 @@ For details on each method, please refer to their original papers and official c
 
 <img src="Benchmark/Performance_benchmark.png" alt="Performance comparison" width="800"/>
 
+
 ### 5. Predicting with run_predict.py
-You can run MetaboGNN via command line using either a CSV file or direct SMILES input.
+You can run **MetaboGNN** via command line using either a  **CSV file** or direct **SMILES** input.
 
 #### 🔍 Option 1: Using SMILES strings
 Use the --smiles flag with one or more comma-separated SMILES strings:
@@ -162,6 +164,7 @@ python run_predict.py --smiles "CC(C)NCC(COC1=CC=CC2=CC=CC=C21)O, CN1C=NC2=C1C(=
 
   - Runs inference on SMILES input (e.g., propranolol and caffeine).
   - Prints results in the terminal and saves a timestamped CSV in ./outputs.
+
 
 #### 🔍 Option 2: Using a CSV file
 Use the --csv flag with a file containing a SMILES column:
