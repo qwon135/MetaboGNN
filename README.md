@@ -130,7 +130,7 @@ python infer.py
 ```
 This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (Performance.png) that visualizes their performance.
 
-<img src="./Performance.png" alt="Model performance comparison" width="600"/>
+<img src="./Performance.png" alt="Model performance comparison" width="700"/>
 
 ### 3. Model Interpretability
 
@@ -148,13 +148,12 @@ We also include a Jupyter notebook, Performance_comparison.ipynb, which generate
 
 For details on each method, please refer to their original papers and official code repositories.
 
-![Performance comparison](Benchmark/Performance_benchmark.png)
-
+<img src="Benchmark/Performance_benchmark.png" alt="Performance comparison" width="800"/>
 
 ### 5. Predicting with run_predict.py
 You can run MetaboGNN via command line using either a CSV file or direct SMILES input.
 
-Option 1: Using SMILES strings
+#### 🔍 Option 1: Using SMILES strings
 Use the --smiles flag with one or more comma-separated SMILES strings:
 
 ```bash
@@ -164,7 +163,7 @@ python run_predict.py --smiles "CC(C)NCC(COC1=CC=CC2=CC=CC=C21)O, CN1C=NC2=C1C(=
   - Runs inference on SMILES input (e.g., propranolol and caffeine).
   - Prints results in the terminal and saves a timestamped CSV in ./outputs.
 
-Option 2: Using a CSV file
+#### 🔍 Option 2: Using a CSV file
 Use the --csv flag with a file containing a SMILES column:
 
 ```bash
