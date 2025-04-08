@@ -155,12 +155,10 @@ For details on each method, please refer to their original papers and official c
 
 ### 5. Predicting with run_predict.py
 You can run **MetaboGNN** via command line using either a  **CSV file** or direct **SMILES** input.
-To reproduce inference results without training, download the pretrained model checkpoints from Google Drive and unzip them into the project root directory.
-
+💡 Note: To use run_predict.py for inference, you must either train the models as described above, or download and unzip the pretrained checkpoints into the ckpt/ directory.
 
 #### 🔍 Option 1: Using SMILES strings
 Use the --smiles flag with one or more comma-separated SMILES strings:
-💡 Note: To use run_predict.py for inference, you must either train the models as described above, or download and unzip the pretrained checkpoints into the ckpt/ directory.
 
 ```bash
 python run_predict.py --smiles "CC(C)NCC(COC1=CC=CC2=CC=CC=C21)O, CN1C=NC2=C1C(=O)N(C(=O)N2C)C" --save_dir ./outputs
