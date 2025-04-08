@@ -155,7 +155,8 @@ For more details on the evaluation protocols, please refer to each method’s or
 We also provide a Jupyter notebook, Performance_comparison.ipynb, which generates a comparative figure summarizing the performance of MetaboGNN against baseline models (MS_BACL, PredMS).
 
 
-### 🔍 Predicting with run_predict.py
+
+### 5. Predicting with run_predict.py
 You can run MetaboGNN via command line using either a CSV file or direct SMILES input.
 
 Option 1: Using SMILES strings
