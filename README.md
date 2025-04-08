@@ -130,7 +130,7 @@ python infer.py
 ```
 This script loads the trained models (MetaboGNN, Base, and Scratch), evaluates them on a common test set, and generates a summary plot (Performance.png) that visualizes their performance.
 
-![Model performance comparison](./Performance.png)
+<img src="./Performance.png" alt="Model performance comparison" width="600"/>
 
 ### 3. Model Interpretability
 
@@ -142,18 +142,13 @@ We provide a Jupyter notebook that visualizes how the model interprets molecular
 
 ### 4. Benchmark
 We provide benchmarking experiments comparing MetaboGNN with prior methods such as MS_BACL and PredMS.
+You can run the code in each subdirectory to reproduce the results, and the resulting performance plots are shown below.
 
-You can run the code in each subdirectory to reproduce the results.
-The resulting performance plots are shown below.
+We also include a Jupyter notebook, Performance_comparison.ipynb, which generates a comparative figure summarizing the results.
 
-For more details on the evaluation protocols, please refer to each method’s original paper and official code repository.
+For details on each method, please refer to their original papers and official code repositories.
 
 ![Performance comparison](Benchmark/Performance_benchmark.png)
-
-### 📊 Benchmark Performance Comparison
-
-We also provide a Jupyter notebook, Performance_comparison.ipynb, which generates a comparative figure summarizing the performance of MetaboGNN against baseline models (MS_BACL, PredMS).
-
 
 
 ### 5. Predicting with run_predict.py
