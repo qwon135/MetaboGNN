@@ -8,6 +8,7 @@ from modules.dualgraph.mol import smiles2graphwithface
 from infer import MetaboGNN, seed_everything
 import argparse
 import warnings
+from rdkit import Chem
 warnings.filterwarnings("ignore")
 
 class InferenceDataset(torch.utils.data.Dataset):
@@ -42,10 +43,16 @@ class InferenceDataset(torch.utils.data.Dataset):
     def __getitem__(self, idx):
         return self.graphs[idx]
 
+def load_smiles_from_sdf(sdf_path):
+    suppl = Chem.SDMolSupplier(sdf_path)
+    smiles_list = [Chem.MolToSmiles(mol) for mol in suppl if mol is not None]
+    return smiles_list
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--csv', type=str, help='Path to input CSV file with SMILES column')
     parser.add_argument('--smiles', type=str, help='Single or comma-separated SMILES string(s)')
+    parser.add_argument('--sdf', type=str, help='Path to SDF file containing molecules')
     parser.add_argument('--model_ckpt', type=str, default='ckpt/2025_MetaboGNN.pt', help='Path to trained model checkpoint')
     parser.add_argument('--save_dir', type=str, default='./outputs', help='Directory to save the prediction CSV')
     parser.add_argument('--device', type=str, default='cuda')
@@ -60,8 +67,12 @@ def main():
         smiles_list = df['SMILES'].tolist()
     elif args.smiles:
         smiles_list = [s.strip() for s in args.smiles.split(',')]
+    elif args.sdf:
+        smiles_list = load_smiles_from_sdf(args.sdf)
+        if len(smiles_list) == 0:
+            raise ValueError("No valid molecules found in SDF file.")
     else:
-        raise ValueError("You must provide either --csv or --smiles.")
+        raise ValueError("You must provide either --csv, --smiles, or --sdf.")
 
     # --- Load model ---
     device = torch.device(args.device)
