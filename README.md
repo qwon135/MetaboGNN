@@ -74,6 +74,7 @@ MetaboGNN/
 ├── edgeshaper.ipynb         # Jupyter notebook to visualize bond-level model interpretation
 ├── train.py                 # Training GNN
 ├── infer.py                 # Inference GNN
+├── run_predict.py           # Command-line prediction using SMILES or CSV input
 ├── requirements.txt         # Python dependencies
 └── README.md                # Project documentation
 
@@ -153,7 +154,8 @@ For details on each method, please refer to their original papers and official c
 
 
 ### 5. Predicting with run_predict.py
-You can run **MetaboGNN** via command line using either a  **CSV file** or direct **SMILES** input.
+You can run **MetaboGNN** via command line using either a  **CSV file** or direct **SMILES** input.   
+💡 Note: To use run_predict.py for inference, you must either train the models as described above, or download and unzip the pretrained checkpoints into the ckpt/ directory.
 
 #### 🔍 Option 1: Using SMILES strings
 Use the --smiles flag with one or more comma-separated SMILES strings:
