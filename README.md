@@ -4,7 +4,9 @@ MetaboGNN is a Graph Neural Network-based framework for predicting liver metabol
 
 This code was developed as part of our study:  
 **"MetaboGNN: Predicting Liver Metabolic Stability with Graph Neural Networks and Cross-Species Data"**  
-(submitted to *Journal of Cheminformatics*)
+
+The study has been published in the **Journal of Cheminformatics** and can be accessed here:
+🔗 [MetaboGNN: Predicting Liver Metabolic Stability with Graph Neural Networks and Cross-Species Data](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-025-01089-y)
 
 ---
 
