@@ -6,6 +6,7 @@ This code was developed as part of our study:
 **"MetaboGNN: Predicting Liver Metabolic Stability with Graph Neural Networks and Cross-Species Data"**  
 
 The study has been published in the **Journal of Cheminformatics** and can be accessed here:
+
 🔗 [MetaboGNN: Predicting Liver Metabolic Stability with Graph Neural Networks and Cross-Species Data](https://jcheminf.biomedcentral.com/articles/10.1186/s13321-025-01089-y)
 
 ---
